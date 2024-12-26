@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  checkerwsp:
+    build: .
+    container_name: checkerwsp
+    ports:
+      - "3001:3001"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      # Volumen para persistir la sesión de WhatsApp
+      - whatsapp-data:/.wwebjs_auth
+    environment:
+      - NODE_ENV=production
+      # Variables necesarias para Puppeteer en Docker
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+    restart: unless-stopped
+    # Asegurarse de que Puppeteer tenga los permisos necesarios
+    cap_add:
+      - SYS_ADMIN
+
+volumes:
+  whatsapp-data:
+    name: whatsapp-data
